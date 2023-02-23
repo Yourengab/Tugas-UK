@@ -4,9 +4,9 @@ include '../functions.php';
 $kelas = $_POST['kelas'];
 $angkatan = $_POST['angkatan'];
 
-$dataSiswa = query("SELECT * FROM tb_siswa WHERE kelas='$kelas' ORDER BY nama ASC");
-$dataRiwayat = query("SELECT * FROM tb_spp INNER JOIN tb_siswa USING(kelas) WHERE kelas='$kelas' AND angkatan='$angkatan' ORDER BY nama ASC");
-$dataBulan = query("SELECT * FROM tb_spp WHERE kelas='$kelas' AND angkatan='$angkatan' GROUP BY bulan ORDER BY id");
+$dataSiswa = query("SELECT * FROM tb_siswa WHERE idkelas = '$kelas' ORDER BY nama ASC");
+$dataRiwayat = query("SELECT * FROM tb_spp INNER JOIN tb_siswa USING(nis) WHERE idkelas = '$kelas' AND angkatan = '$angkatan' ORDER BY nama ASC");
+$dataBulan = query("SELECT * FROM tb_spp WHERE angkatan = '$angkatan' GROUP BY bulan ORDER BY id");
 
 ?>
 <!DOCTYPE html>
@@ -27,15 +27,15 @@ $dataBulan = query("SELECT * FROM tb_spp WHERE kelas='$kelas' AND angkatan='$ang
             <tr>
                 <th>Nama</th>
                 <?php foreach ($dataBulan as $bulan) : ?>
-                    <th><?= $bulan['bulan']; ?></th>
+                <th><?= $bulan['bulan']; ?></th>
                 <?php endforeach; ?>
             </tr>
             <?php foreach(  $dataSiswa as $siswa ) : ?>
             <tr>
-            <td><?= $siswa['nama']; ?></td>
-            <?php foreach(  $dataRiwayat as $riwayat ) : ?>
+                <td><?= $siswa['nama']; ?></td>
+                <?php foreach(  $dataRiwayat as $riwayat ) : ?>
                 <?php if($siswa['nis'] == $riwayat['nis']) :?>
-                    <td><?= $riwayat['totalbayar']; ?></td>
+                <td><?= $riwayat['totalbayar']; ?></td>
                 <?php endif; ?>
                 <?php endforeach; ?>
             </tr>
@@ -48,18 +48,21 @@ $dataBulan = query("SELECT * FROM tb_spp WHERE kelas='$kelas' AND angkatan='$ang
         </div>
         <div class="layer"></div>
     </div>
-    <!-- <script>
-    window.print();
-    window.onafterprint = () => history.back();
-<!-- </script> -->
-<!-- <?php foreach ($dataSiswa as $siswa) : ?>
+
+    <!-- <?php foreach ($dataSiswa as $siswa) : ?>
                 <tr>
                     <td><?= $siswa['nama']; ?></td>
                     <?php foreach ($dataRiwayat as $riwayat) : ?>
                         <?php if ($siswa['nis'] ===  $riwayat['nis']) : ?>
                             <td><?= $riwayat['totalbayar']; ?></td>
-                       <?php endif; ?>
+                    <?php endif; ?>
                     <?php endforeach; ?>
                 </tr>
             <?php endforeach; ?> --> -->
+
+    <script>
+        window.print();
+        window.onafterprint = () => history.back();
+    </script>
+
 </html>
