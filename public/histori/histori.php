@@ -2,7 +2,7 @@
 include '../views/templates/header.php';
 
 $dataRiwayat = query("SELECT * FROM tb_spp INNER JOIN tb_siswa using(nis) WHERE totalbayar > 0 ORDER BY tglbayar DESC");
-
+$dataKelas = query("SELECT * FROM tb_kelas");
 
 if (isset($_GET['keyword'])) {
     if ($_GET['keyword'] == "") {
@@ -18,25 +18,27 @@ if (isset($_GET['keyword'])) {
 
 <body>
     <h2>Riwayat Pembayaran</h2>
-    <?php if ($_GET['keyword'] == "") { ?>
+    <?php if (isset($_GET['keyword'])) { ?>
         <a href="laporan.php">Cetak</a>
     <?php } else { ?>
         <a href="laporan.php?keyword=<?= $keyword ?>">Cetak</a>
     <?php } ?>
     <br>
+
     <form action="histori.php" method="get">
         <label for='cariRiwayat'>Cari Riwayat Pembayaran :</label>
         <input type='text' id='cariRiwayat' name='keyword'>
         <button type="submit">Cari</button>
     </form>
+
     <form action="laporankelas.php" method="post">
         <hr>
         <div class="cetakKelas">
             <h3>Cetak sesuai kelas</h3>
             <select name="kelas" required>
-                <option value="VII">VII</option>
-                <option value="VIII">VIII</option>
-                <option value="IX">IX</option>
+                <?php foreach ($dataKelas as $kelas) : ?>
+                <option value="<?= $kelas['idkelas']; ?>"><?= $kelas['kelas']; ?></option>
+                <?php endforeach; ?>
             </select>
             <select name="angkatan" required>
                 <option value="I">I</option>
