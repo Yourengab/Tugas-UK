@@ -1,0 +1,65 @@
+<?php
+include '../functions.php';
+
+$kelas = $_POST['kelas'];
+$angkatan = $_POST['angkatan'];
+
+$dataSiswa = query("SELECT * FROM tb_siswa WHERE kelas='$kelas' ORDER BY nama ASC");
+$dataRiwayat = query("SELECT * FROM tb_spp INNER JOIN tb_siswa USING(kelas) WHERE kelas='$kelas' AND angkatan='$angkatan' ORDER BY nama ASC");
+$dataBulan = query("SELECT * FROM tb_spp WHERE kelas='$kelas' AND angkatan='$angkatan' GROUP BY bulan ORDER BY id");
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style/laporan.php">
+    <title>Laporan</title>
+</head>
+
+<body>
+    <h1>Laporan SPP Kelas <?= $kelas ?></h1>
+    <div class="container">
+        <table border="1" cellpadding="5">
+            <tr>
+                <th>Nama</th>
+                <?php foreach ($dataBulan as $bulan) : ?>
+                    <th><?= $bulan['bulan']; ?></th>
+                <?php endforeach; ?>
+            </tr>
+            <?php foreach(  $dataSiswa as $siswa ) : ?>
+            <tr>
+            <td><?= $siswa['nama']; ?></td>
+            <?php foreach(  $dataRiwayat as $riwayat ) : ?>
+                <?php if($siswa['nis'] == $riwayat['nis']) :?>
+                    <td><?= $riwayat['totalbayar']; ?></td>
+                <?php endif; ?>
+                <?php endforeach; ?>
+            </tr>
+            <?php endforeach; ?>
+        </table>
+        <h2>Total Bayar : Rp</h2>
+        <div class="ttd">
+            <p>Denpasar, <?= date('d-m-Y'); ?></p>
+            <p>Mansur Yadana</p>
+        </div>
+        <div class="layer"></div>
+    </div>
+    <!-- <script>
+    window.print();
+    window.onafterprint = () => history.back();
+<!-- </script> -->
+<!-- <?php foreach ($dataSiswa as $siswa) : ?>
+                <tr>
+                    <td><?= $siswa['nama']; ?></td>
+                    <?php foreach ($dataRiwayat as $riwayat) : ?>
+                        <?php if ($siswa['nis'] ===  $riwayat['nis']) : ?>
+                            <td><?= $riwayat['totalbayar']; ?></td>
+                       <?php endif; ?>
+                    <?php endforeach; ?>
+                </tr>
+            <?php endforeach; ?> --> -->
+</html>
